@@ -1,0 +1,81 @@
+---
+layout:     post
+title:      asio tcp example 同步代码解析
+subtitle:   asio,tcp,sync
+date:       2019-12-25
+author:     ljq
+header-img: img/post-bg-ios9-web.jpg
+catalog:	 true
+tags:
+    - asio
+    - tcp
+---
+# 众所周知,asio是c++ boost的一个 io库，其中包括了io和网络的操作，当然大多数情况应该拿来开发网络应用程序，本文将讲述我最近学习asio的tcp部分的心得
+
+## server部分
+
+```
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+#include <cstdlib>
+#include <iostream>
+#include <thread>
+#include <utility>
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
+
+const int max_length = 1024;
+
+void session(tcp::socket sock)
+{
+	try{
+	    for (;;)
+		{
+		    char data[max_length];
+            boost::system::error_code error;
+	        size_t length = sock.read_some(boost::asio::buffer(data), error);
+	        if (error == boost::asio::error::eof)
+		        break; // Connection closed cleanly by peer.
+	        else if (error)
+	            throw boost::system::system_error(error); // Some other error.
+
+			boost::asio::write(sock, boost::asio::buffer(data, length));
+		}
+	}catch (std::exception& e){
+	    std::cerr << "Exception in thread: " << e.what() << "\n";
+	}
+}
+
+void server(boost::asio::io_context& io_context, unsigned short port)
+{
+	tcp::acceptor a(io_context, tcp::endpoint(tcp::v4(), port));
+    for (;;)
+	{
+		std::thread(session, a.accept()).detach();
+	}
+}
+
+int main(int argc, char* argv[])
+{
+	try
+	{
+	    if (argc != 2)
+		{
+		    std::cerr << "Usage: blocking_tcp_echo_server <port>\n";
+		    return 1;
+		}
+	    boost::asio::io_context io_context;
+	    server(io_context, std::atoi(argv[1]));
+	}catch (std::exception& e){
+		std::cerr << "Exception: " << e.what() << "\n";
+	}
+	
+	return 0;
+}
+```
+
+	上面是一个非阻塞的回显服务的demo，这边不去讨论boost::asio和no-boost::asio，因为二者的区别仅仅是个别函数和命名空间不同，其使用方式是类似的，如果想要用不带boost的asio，可以尝试把上面的代码的boost命名空间去掉，头文件替换成对应的asio.hpp。可以看出来其中用到了几个关键的asio的类,主要有asio::io_context(也有的文章写作asio::io_service)，asio::ip::tcp::acceptor，asio::ip::tcp::socket。
+	先来说asio::io_context，如果看看asio中的其他[example](https://github.com/mabrarov/asio_samples)可以发现这个类是被用到最多，说明非常重要，它相当于是asio进行网络/io处理的工作线程，也可以称为io线程，其他功能的实现都与它相关，里面负责管理工作的队列，是一个线程安全的类。
