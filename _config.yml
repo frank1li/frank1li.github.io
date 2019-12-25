@@ -5,7 +5,7 @@ header-img: img/post-bg-desk.jpg
 email: everyone@gmail.com
 description: "memory never lose"
 keyword: "狗粮合集"
-url: "http://ljq19595.github.io"          # your host, for absolute URL
+url: "https://ljq19595.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/ljq19595/ljq19595.github.io.git" # you code repository
 
@@ -39,7 +39,7 @@ anchorjs: true                          # if you want to customize anchor. check
 
 # Gems
 # from PR#40, to support local preview for Jekyll 3.0
-#gems: [jekyll-paginate]
+gems: [jekyll-paginate]
 
 
 
@@ -74,18 +74,18 @@ gitalk:
 
 # Analytics settings
 # Baidu Analytics
-ba_track_id: 
+#ba_track_id: 
 
 # Google Analytics
-ga_track_id: ''            # Format: UA-xxxxxx-xx
-ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+#ga_track_id: ''            # Format: UA-xxxxxx-xx
+#ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
 
 
 
 # Featured Tags
-featured-tags: true                     # 是否使用首页标签
+featured-tags: false                     # 是否使用首页标签
 featured-condition-size: 0              # 相同标签数量大于这个数，才会出现在首页
 
 
