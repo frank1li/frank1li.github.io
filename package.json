@@ -3,10 +3,10 @@
     "title": "BY Blog",
     "author": "BY <qiubaiyingios@163.com>",
     "version": "1.7.0",
-    "homepage": "http://qiubaiying.github.io",
+    "homepage": "https://ljq19595.github.io/",
     "repository": {
         "type": "git",
-        "url": "https://github.com/qiubaiying/qiubaiying.github.io"
+        "url": "https://github.com/ljq19595/ljq19595.github.io"
     },
     "bugs": "https://github.com/qiubaiying/qiubaiying.github.io/issues",
     "devDependencies": {
